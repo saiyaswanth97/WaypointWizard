@@ -21,11 +21,11 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.x'  # Set your Python version
+          python-version: '3.8'  # Set your Python version
 
       - name: Install dependencies
         run: |
-          pip install pylint
+          pip3 install pylint
 
       - name: Run Pylint
         run: |
@@ -46,5 +46,5 @@ jobs:
 
       - name: Run Cppcheck
         run: |
-          cppcheck --enable=all --inconclusive --error-exitcode=1 src/  # Replace with your C++ directory
+          cppcheck --enable=all --inconclusive --error-exitcode=1 src/ include/ # Replace with your C++ directory
 
