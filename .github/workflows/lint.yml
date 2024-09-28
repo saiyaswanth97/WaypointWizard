@@ -29,7 +29,7 @@ jobs:
 
       - name: Run Pylint
         run: |
-          pylint your_python_package/  # Replace with your Python directory
+          pylint scripts/  # Replace with your Python directory
 
   lint-cpp:
     name: Lint C++ Code
@@ -46,5 +46,5 @@ jobs:
 
       - name: Run Cppcheck
         run: |
-          cppcheck --enable=all --inconclusive --error-exitcode=1 your_cpp_folder/  # Replace with your C++ directory
+          cppcheck --enable=all --inconclusive --error-exitcode=1 src/  # Replace with your C++ directory
 
