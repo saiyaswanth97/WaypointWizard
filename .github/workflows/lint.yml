@@ -1,0 +1,50 @@
+name: Lint Python and C++
+
+on:
+  # Trigger the workflow on push or pull request
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  lint-python:
+    name: Lint Python Code
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'  # Set your Python version
+
+      - name: Install dependencies
+        run: |
+          pip install pylint
+
+      - name: Run Pylint
+        run: |
+          pylint your_python_package/  # Replace with your Python directory
+
+  lint-cpp:
+    name: Lint C++ Code
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install cppcheck
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y cppcheck
+
+      - name: Run Cppcheck
+        run: |
+          cppcheck --enable=all --inconclusive --error-exitcode=1 your_cpp_folder/  # Replace with your C++ directory
+
