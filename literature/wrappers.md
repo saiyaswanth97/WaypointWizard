@@ -170,6 +170,6 @@ To call C++ functions from Python, several methods can be used, depending on the
 | **`Cython`**  | Moderate     | High        | Performance-critical, simple or complex functions |
 | **`SWIG`**    | High         | High        | Large C++ codebases, automation  |
 | **`pybind11`**| Moderate     | High        | Modern C++ projects, clean syntax|
-| **Boost.Python** | High      | High        | Complex C++ structures           |
+| **`Boost.Python`** | High      | High        | Complex C++ structures           |
 
 The choice of method depends on the complexity of your C++ code, performance requirements, and ease of use. For most modern C++ projects, **`pybind11`** is the most efficient and user-friendly.
