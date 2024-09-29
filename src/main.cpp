@@ -2,7 +2,7 @@
 #include "../include/primitives.h"
 #include <random>
 #include <cmath>
-double MIN_X = 0.0, MAX_X = 10.0, MIN_Y = 0.0, MAX_Y = 10.0, START_X = 2.5, START_Y = 3.5, END_X = 7.5, END_Y = 9.5, STEP_SIZE = 0.4,NEIGHBOUR_RADIUS = 0.3,GOAL_THRES=0.7;
+double MIN_X = 0.0, MAX_X = 10.0, MIN_Y = 0.0, MAX_Y = 10.0, START_X = 2.5, START_Y = 3.5, END_X = 5.5, END_Y = 7.5, STEP_SIZE = 0.7,NEIGHBOUR_RADIUS = 1.9,GOAL_THRES=1.0;
 double MAX_DOUBLE1 = std::numeric_limits<double>::max();
 
 std::array<double, 2> get_point_in_step_size(Point p, double x, double y) {
@@ -10,6 +10,7 @@ std::array<double, 2> get_point_in_step_size(Point p, double x, double y) {
     new_x = p.x + STEP_SIZE * ((p.x - x) / sqrt(pow((p.y-y),2)+ pow((p.x-x),2)));
     new_y = p.y + STEP_SIZE * ((p.y - y) / sqrt(pow((p.y-y),2)+ pow((p.x-x),2)));
     std::array<double, 2> new_points_arr = {new_x,new_y};
+//    std::cout<<x<<" "<<y<<" "<<new_x<<" "<<new_y<<" "<<p.x<<" "<<p.y<<std::endl;
     return new_points_arr;
 }
 
@@ -37,7 +38,7 @@ int main() {
         int min_dist_id = 0;
         double curr_dist = 0;
         for(auto & neighbour : neighbours){
-            curr_dist = points.get_cost(neighbour.id) + sqrt((pow(x-neighbour.x,2) + pow(y-neighbour.y,2)));
+            curr_dist = points.get_cost(neighbour.id) + sqrt((pow(new_coords[0]-neighbour.x,2) + pow(new_coords[1]-neighbour.y,2)));
             if(curr_dist< min_dist){
                 min_dist = curr_dist;
                 min_dist_id = neighbour.id;
@@ -61,6 +62,7 @@ int main() {
         else {
             std::cout << sqrt((pow(END_X - points.get(new_point_id).x, 2) + pow(END_Y - points.get(new_point_id).x, 2)))
                                       << std::endl;
+            std::cout<<x<<" "<<y<<" "<<new_coords[0]<<" "<<new_coords[1]<<std::endl;
         }
 
     }
