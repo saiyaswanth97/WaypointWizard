@@ -1,4 +1,5 @@
 import random
+import time
 import numpy as np
 from matplotlib import pyplot as plt
 
@@ -71,6 +72,7 @@ class InteractivePlot:
         elif self.end is None:
             self.end = (int(event.xdata), int(event.ydata))
             self.refesh()
+            print(f"End: {self.end}")
 
     def interactive_plot(self):
         self.fig, self.ax = plt.subplots()
@@ -86,14 +88,29 @@ class InteractivePlot:
             self.ax.plot(self.start[0], self.start[1], 'r*', markersize=5)
         if self.end is not None:
             self.ax.plot(self.end[0], self.end[1], 'g*', markersize=5)
+            self.ax.set_title("Close the plot to run the alogorithm...")
         plt.draw()
         plt.pause(0.001)
         plt.show()
+        # TODO auto close the plot
+        # if self.start is not None and self.end is not None:
+        #     print("Closing the plot in 10 seconds")
+        #     time.sleep(20)
+        #     plt.close()
+
+    def get_points(self):
+        return self.start, self.end
 
 
 if __name__ == "__main__":
     env = Environment((1000, 2000))
     plot = InteractivePlot(env)
+    # time.sleep(5)
+    start, end = plot.get_points()
+    print(f"Start: {start}, End: {end}")
+    while start is None or end is None:
+        start, end = plot.get_points()
+    print(f"Start: {start}, End: {end}")
     # env.plot()
 
 
