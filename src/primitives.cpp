@@ -4,6 +4,7 @@
 
 #include "../include/primitives.h"
 #include <cmath>
+#include <limits>
 double MAX_DOUBLE = std::numeric_limits<double>::max();
 
 Points::Points() {
@@ -75,6 +76,13 @@ int Points::get_closest(double x, double y) {
     return min_id;
 }
 
+void Points::print_points() {
+    std::map<int , Point >::iterator it;
+    for(it = points_list.begin(); it!=points_list.end(); it++) {
+        std::cout << it->second.id << "; " << it->second.x << "; " << it->second.y << "; " << it->second.cost << std::endl;
+    }
+}
+
 Edges::Edges() {
     last_edge_idx = 0;
 }
@@ -100,4 +108,9 @@ void Edges::change_id(int new_id, int id_2) {
     }
 }
 
-
+void Edges::print_edges() {
+    std::map<int , Edge>::iterator it;
+    for (it = edge_list.begin(); it != edge_list.end(); it++) {
+        std::cout << it->second.edge_index << "; " << it->second.id_1 << "; " << it->second.id_2 << std::endl;
+    }
+}

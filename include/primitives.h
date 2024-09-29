@@ -32,6 +32,7 @@ class Points{
         double get_distance(int id_1, int id_2);
         int get_last_id() const;
         double get_cost(int id);
+        void print_points();
 };
 
 struct Edge{
@@ -49,4 +50,5 @@ class Edges : public Points{
         Edges();
         int set_edge(int id_1, int id_2);
         void change_id(int new_id , int id_2);
+        void print_edges();
 };
