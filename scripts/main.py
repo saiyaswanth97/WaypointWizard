@@ -29,6 +29,8 @@ class Environment:
                             continue
                         self.grid[x + i, y + j] = 0
             self.polygons.append([position, radius, shape])
+        if shape == "polygon":
+            pass
 
     def plot(self):
         plt.imshow(self.grid, cmap='gray')

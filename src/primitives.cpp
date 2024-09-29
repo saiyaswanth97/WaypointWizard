@@ -14,6 +14,7 @@ int Points::set(double x, double y) {
 
     Point p{} ;
     p.id = last_id++;
+    // TODO logic error?
     p.cost = 0;
     p.x = x;
     p.y = y;
@@ -47,7 +48,7 @@ double Points::get_cost(int id){
 std::vector<Point> Points::get_neighbours(double thres_dist, double x , double y) {
     std::vector<Point> neighbouring_points;
 
-    std::map<int , Point >::iterator it;
+    std::map<int , Point>::iterator it;
 
     for(it = points_list.begin(); it!=points_list.end(); it++){
         if(sqrt(pow(it->second.x - x ,2) + pow(it->second.y - y ,2))<=thres_dist){
@@ -94,7 +95,7 @@ void Edges::change_id(int new_id, int id_2) {
 
     for (it = edge_list.begin(); it != edge_list.end(); it++) {
         if (it->second.id_2 == id_2) {
-            it->second.id_2 = new_id;
+            it->second.id_1 = new_id;
         }
     }
 }

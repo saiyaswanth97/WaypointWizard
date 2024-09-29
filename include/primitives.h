@@ -13,12 +13,13 @@ struct Point{
     double x;
     double y;
     double cost;
+    // TODO change this to unsigned int
     int id;
 };
 
 class Points{
     private:
-        int last_id ;
+        int last_id;
         std::map<int, Point> points_list;
     public:
         explicit Points();
@@ -31,7 +32,6 @@ class Points{
         double get_distance(int id_1, int id_2);
         int get_last_id() const;
         double get_cost(int id);
-
 };
 
 struct Edge{
