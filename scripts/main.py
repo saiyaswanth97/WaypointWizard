@@ -101,6 +101,18 @@ class Environment:
                 radius = polygon[1]
                 if np.sqrt((x - position[0])**2 + (y - position[1])**2) < radius:
                     return True
+            if polygon[2] == "polygon":
+                x, y = position
+                for i in range(len(polygon[0])):
+                    x1, y1 = polygon[0][i]
+                    x2, y2 = polygon[0][(i + 1) % len(polygon[0])]
+                    slope = [(y2 - y1), (x2 - x1)]
+                    intercept = slope[1] * y1 - slope[0] * x1
+                    centre_sign = np.sign(slope[0] * x + intercept - y * slope[1])
+                    direction = (slope[0] * x + intercept - slope[1] * y) * centre_sign < 0
+                    if direction:
+                        return False
+                return True
 
 class InteractivePlot:
     def __init__(self, env):
