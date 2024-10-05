@@ -16,9 +16,9 @@ class Environment:
         self.grid = np.ones((grid_shape[0], grid_shape[1]))
         self.polygons = []
         # TODO make it to config
-        self.add_random_obstacles(10, 64)
+        self.add_random_obstacles(20, 64)
 
-    def add_obstacle(self, position, max_radius, shape="circle"):
+    def add_obstacle(self, position, max_radius, shape="polygon"):
         if shape == "circle":
             x, y = position
             radius = (int)(self.min_radius  + random.randint(0, max_radius - self.min_radius))
@@ -30,16 +30,63 @@ class Environment:
                         self.grid[x + i, y + j] = 0
             self.polygons.append([position, radius, shape])
         if shape == "polygon":
-            pass
+            polygon = self.add_random_quadrilateral(position, max_radius)
+            self.polygons.append([polygon, max_radius, shape])
 
     def plot(self):
         plt.imshow(self.grid, cmap='gray')
         plt.show()
 
     def add_random_obstacles(self, n, max_radius):
-        for _ in range(n):
-            position = (random.randint(0, self.grid.shape[0]), random.randint(0, self.grid.shape[1]))
-            self.add_obstacle(position, max_radius)
+        for i in range(n):
+            polygon_type = "circle" if random.random() < 0.5 else "polygon"
+            x = random.randint(0, self.grid.shape[0])
+            y = random.randint(0, self.grid.shape[1])
+            self.add_obstacle([x, y], max_radius, polygon_type)
+
+    def add_random_quadrilateral(self, position, max_radius, n=4):
+        angles_init = np.linspace(0, 2*np.pi * (1 + 1/n), n + 1)
+        min_angle = np.pi / 24
+        polygon = []
+        polygon_global = []
+        for i in range(n):
+            angle = random.uniform(angles_init[i] + min_angle, angles_init[i + 1] - min_angle)
+            radius = (int)(self.min_radius  + random.randint(0, max_radius - self.min_radius))
+            x = (int)(radius * np.cos(angle)) + max_radius
+            y = (int)(radius * np.sin(angle)) + max_radius
+            polygon.append([x, y])
+        local_grid = np.ones((2 * max_radius, 2 * max_radius))
+
+        x, y = np.meshgrid(np.arange(2 * max_radius), np.arange(2 * max_radius))
+        inside = np.zeros(x.shape)
+        for i in range(n):
+            x1, y1 = polygon[i]
+            x2, y2 = polygon[(i + 1) % n]
+            slope = [(y2 - y1), (x2 - x1)]
+            intercept = slope[1] * y1 - slope[0] * x1
+            centre_sign = np.sign(slope[0] * max_radius + intercept - max_radius * slope[1])
+            direction = (slope[0] * x + intercept - slope[1] * y) * centre_sign < 0
+            inside = np.logical_or(inside, direction)
+        local_grid = inside
+
+        start_x, start_y = -min(0, position[0] - max_radius), -min(0, position[1] - max_radius)
+        end_x = 2 * max_radius + min(0, self.grid.shape[0] - position[0] - 2*max_radius)
+        end_y = 2 * max_radius + min(0, self.grid.shape[1] - position[1] - 2*max_radius)
+        grid_start_x, grid_start_y = position[0] - radius + start_x, position[1] - radius + start_y
+        grid_end_x, grid_end_y = grid_start_x + end_x - start_x, grid_start_y + end_y - start_y
+        print(self.grid.shape, position, max_radius)
+        print(grid_start_x, grid_start_y, grid_end_x, grid_end_y, start_x, start_y, end_x, end_y)
+
+        self.grid[grid_start_x:grid_end_x, grid_start_y:grid_end_y] = np.logical_and(
+            self.grid[grid_start_x:grid_end_x, grid_start_y:grid_end_y], local_grid[start_x:end_x, start_y:end_y])
+        for point in polygon:
+            x, y = point
+            x = x - max_radius + position[0]
+            y = y - max_radius + position[1]
+            x, y = max(0, x), max(0, y)
+            x, y = min(self.grid.shape[0] - 1, x), min(self.grid.shape[1] - 1, y)
+            polygon_global.append([x, y])
+        return polygon_global
     
     def get_grid(self):
         return self.grid
@@ -49,11 +96,11 @@ class Environment:
 
     def get_collision(self, position):
         for polygon in self.polygons:
-            x, y = polygon[0]
-            radius = polygon[1]
-            if np.sqrt((x - position[0])**2 + (y - position[1])**2) < radius:
-                return True
-
+            if polygon[2] == "circle":
+                x, y = polygon[0]
+                radius = polygon[1]
+                if np.sqrt((x - position[0])**2 + (y - position[1])**2) < radius:
+                    return True
 
 class InteractivePlot:
     def __init__(self, env):
